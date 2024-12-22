@@ -36,6 +36,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # apps
+    'auth_service',
+
     # default apps
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,8 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # apps
-    'auth_service',
+
     # third-party apps
     'rest_framework',
     'rest_framework_simplejwt',
