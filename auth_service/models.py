@@ -82,3 +82,32 @@ class Subscription(models.Model):
     def __str__(self):
         return f"{self.user.email} - {self.plan}"
 
+
+import uuid
+from django.utils import timezone
+from datetime import timedelta
+
+class EmailVerification(models.Model):
+    """
+    Model to manage verification of user's email
+    """
+
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="email_verification", verbose_name="user")
+    code = models.UUIDField(default=uuid.uuid4, unique=True, verbose_name="verification code")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="created date")
+    expires_at = models.DateTimeField(verbose_name="expires date")
+
+    class Meta:
+        verbose_name = "verification code of email"
+        verbose_name_plural = "verification codes of email"
+
+    def save(self, *args, **kwargs):
+        """
+        Set expire date when saving
+        """
+        if not self.expires_at:
+            self.expires_at = timezone.now() + timedelta(hours=1)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.user.email} - {self.code}"
