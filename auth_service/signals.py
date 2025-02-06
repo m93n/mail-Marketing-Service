@@ -11,9 +11,9 @@ def create_jwt_for_social_user(request, sociallogin, **kwargs):
     It generates an access and refresh token for the user using RefreshToken.
     """
     user = sociallogin.user
-    # تولید توکن برای کاربر
+    # Generate token for user
     refresh = RefreshToken.for_user(user)
-    # به عنوان مثال، چاپ توکن‌ها در لاگ (در پروژه واقعی می‌توان این توکن‌ها را به کاربر برگرداند)
+    # For example, print tokens in log (in real projects can return this tokens to user)
     print(f"JWT generated for social user {user.email}:")
     print(f"Access Token: {str(refresh.access_token)}")
     print(f"Refresh Token: {str(refresh)}")
