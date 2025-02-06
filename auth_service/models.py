@@ -1,12 +1,58 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 
-class CustomUser(AbstractUser):
-    role = models.CharField(max_length=50, blank=True, null=True)  # Job Role
-    company = models.CharField(max_length=255, blank=True, null=True)  # User's Company
+class CustomUserManager(BaseUserManager):
+    """
+    Custom User Manager for manage creating users.
+    """
 
-class Subscription(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    is_confirmed = models.BooleanField()
-    confirmation_code = models.CharField(max_length=250)
-    created_at = models.DateTimeField()
+    def create_user(self, email, password=None, **extra_fields):
+        """
+        Create and Save an user with email and password.
+        """
+        if not email:
+            raise ValueError("email address is required!")
+        email = self.normalize_email(email) # normalize email address (lowercase words and delete spaces)
+        user = self.model(email=email, **extra_fields) # self.model is the model that BaseUserManager handels. in here it's CustomUser that connected to CustomUserManager ==> (CustomUserManager.model == CustomUser)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        """
+        Create and Save a super user.
+        """
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+
+        return self.create_user(email, password, **extra_fields)
+
+class CustomUser(AbstractBaseUser, PermissionsMixin):
+    """
+    Custom model of users that logins with email.
+    """
+    
+    ROLE_CHOICES = (
+        ("user", "user"),
+        ("admin", "admin"),
+    )
+
+    email = models.EmailField(unique=True, verbose_name="Email")
+    full_name = models.CharField(max_length=255, verbose_name="Full Name")
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default="user", verbose_name="User's Roll")
+    
+    is_active = models.BooleanField(default=True, verbose_name="Active")
+    is_staff = models.BooleanField(default=False, verbose_name="staff")
+
+    objects = CustomUserManager()
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["full_name"]
+
+    class Meta:
+        verbose_name = "user"
+        verbose_name_plural = "users"
+        ordering = ["-id"]
+
+    def __str__(self):
+        return self.email
