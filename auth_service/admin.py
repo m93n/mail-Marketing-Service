@@ -13,4 +13,8 @@ class SubscriptionAdmin(admin.ModelAdmin):
     search_fields = ('user__email',)
     ordering = ('-start_date',)
 
-
+@admin.register(EmailVerification)
+class EmailVerificationAdmin(admin.ModelAdmin):
+    list_display = ('user', 'code', 'created_at', 'expires_at')
+    search_fields = ('user__email',)
+    ordering = ('-created_at',)
