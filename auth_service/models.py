@@ -56,3 +56,29 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
+class Subscription(models.Model):
+    """
+    Model of Subscription of users
+    """
+
+    PLAN_CHOICES = (
+        ("free", "free"),
+        ("basic", "basic"),
+        ("premium", "premium"),
+    )
+
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="subscription", verbose_name="user")
+    plan = models.CharField(max_length=10, choices=PLAN_CHOICES, default="free", verbose_name="type of subscription")
+    start_date = models.DateTimeField(auto_now_add=True, verbose_name="start date")
+    end_date = models.DateTimeField(null=True, blank=True, verbose_name="end date")
+
+    class Meta:
+        verbose_name = "subscription"
+        verbose_name_plural = "subscriptions"
+        ordering = ["-start_date"]
+
+    def __str__(self):
+        return f"{self.user.email} - {self.plan}"
+
