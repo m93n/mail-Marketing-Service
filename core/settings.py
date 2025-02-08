@@ -65,7 +65,8 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_EMAIL_REQUIRED = True
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/auth_service/OAuth2/"
+LOGOUT_REDIRECT_URL = "/auth_service/OAuth2/"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
