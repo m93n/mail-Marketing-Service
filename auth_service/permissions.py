@@ -25,3 +25,11 @@ class IsSubscriptionActive(BasePermission):
         user_subscription = request.user.subscription
         return user_subscription.is_active  # Check if the subscription is active or not
     
+class IsGuest(BasePermission):
+    """
+    Only guest users (not logged in) can access.
+    """
+    def has_permission(self, request, view):
+        return request.user.role == 'guest'
+    
+    
