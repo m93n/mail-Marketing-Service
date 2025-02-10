@@ -16,3 +16,12 @@ class IsOwnerOrReadOnly(BasePermission):
             return True  # permission to read data for all users
         return obj.owner == request.user  # Only owner can edit
 
+class IsSubscriptionActive(BasePermission):
+    """
+    Only users with an active subscription can access.
+    """
+    def has_permission(self, request, view):
+        # Assume that each user's subscription is stored in the Subscription model
+        user_subscription = request.user.subscription
+        return user_subscription.is_active  # Check if the subscription is active or not
+    
