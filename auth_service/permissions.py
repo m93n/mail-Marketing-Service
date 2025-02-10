@@ -32,4 +32,9 @@ class IsGuest(BasePermission):
     def has_permission(self, request, view):
         return request.user.role == 'guest'
     
-    
+class IsUser(BasePermission):
+    """
+    Only regular users (with the user role) can have access.
+    """
+    def has_permission(self, request, view):
+        return request.user.role == 'user'
